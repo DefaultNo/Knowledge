@@ -3544,6 +3544,52 @@
         const target = e.target;
         if (target.classList.contains("cookie__close")) cookie.style.display = "none";
     }));
+    if (document.querySelector(".quiz")) {
+        const blockQuiz = document.querySelector(".block-quiz"), quizWrapper = document.querySelector(".quiz__wrapper"), quizForm = document.querySelector(".form-quiz"), quizStages = document.querySelectorAll(".content-quiz__stage"), quizPreparing = document.querySelector(".prepare-quiz"), quizNext = document.querySelector(".block-quiz__button_next"), quizPrev = document.querySelector(".block-quiz__button_prev"), quizProgressBar = document.querySelector(".block-quiz__header .progressbar-quiz__line"), quizQuestionNumber = document.querySelector(".block-quiz__question-number"), preparingProgressbar = document.querySelector(".prepare-quiz .progressbar-quiz__line"), preparingNumbers = document.querySelector(".prepare-quiz__percent");
+        let activeStage = 1;
+        function loadProgressbar() {
+            let width = 1;
+            setInterval((() => {
+                if (width >= 100) {
+                    quizWrapper.style.display = "none";
+                    quizForm.classList.add("_stage-active");
+                } else {
+                    width++;
+                    preparingProgressbar.style.width = `${width}%`;
+                    preparingNumbers.innerHTML = `${width}%`;
+                }
+            }), 50);
+        }
+        function clearActiveStage() {
+            quizStages.forEach((item => item.classList.remove("_active-stage")));
+        }
+        function updateProgressbar() {
+            const percent = activeStage / 4 * 100;
+            quizProgressBar.style.width = `${percent}%`;
+        }
+        quizNext.addEventListener("click", (() => {
+            if (4 == activeStage) {
+                blockQuiz.style.display = "none";
+                quizPreparing.classList.add("_stage-active");
+                loadProgressbar();
+            } else {
+                activeStage++;
+                quizQuestionNumber.innerHTML = activeStage;
+                clearActiveStage();
+                updateProgressbar();
+                quizStages[activeStage - 1].classList.add("_active-stage");
+            }
+        }));
+        quizPrev.addEventListener("click", (() => {
+            if (1 == activeStage) return; else {
+                activeStage--;
+                quizQuestionNumber.innerHTML = activeStage;
+                clearActiveStage();
+                updateProgressbar();
+                quizStages[activeStage - 1].classList.add("_active-stage");
+            }
+        }));
+    }
     pageNavigation();
     spoilers();
     tabs();
